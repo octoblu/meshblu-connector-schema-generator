@@ -7,7 +7,7 @@
 
 [![NPM](https://nodei.co/npm/meshblu-connector-schema-generator.svg?style=flat)](https://npmjs.org/package/meshblu-connector-schema-generator)
 
-A component of [Meshblu Connectors](https://meshblu-connectors.readme.io). Click [here](https://meshblu-connectors.readme.io/docs/schema-generator) to view the component documentation.
+A component of [Meshblu Connectors](https://meshblu-connectors.readme.io). Click [here](https://meshblu-connectors.readme.io/docs/connector-schema-generator) to view the component documentation.
 
 ## Getting Started
 
