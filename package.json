@@ -1,6 +1,6 @@
 {
   "name": "meshblu-connector-schema-generator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Meshblu Connector Schema Generator",
   "main": "index.js",
   "scripts": {

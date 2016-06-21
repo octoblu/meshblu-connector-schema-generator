@@ -27,7 +27,7 @@ npm install --save meshblu-connector-schema-generator
 {
   //...
   "scripts": {
-    "generate:schema": "meshblu-connector-schema-generator"
+    "generate:schema": "meshblu-connector-schema-generator > ./schemas.json"
   }
   //...
 }
