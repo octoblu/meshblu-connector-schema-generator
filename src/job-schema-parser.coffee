@@ -6,12 +6,14 @@ class JobSchemaParser
   constructor: ({@connectorPath}) ->
     throw new Error 'JobSchemaParser requires connectorPath' unless @connectorPath?
     @jobs = @_getJobs()
+    @configs = @_getConfigs()
 
   configSchema: (callback) =>
-    callback null, @_configSchemaFromConnectorPath()
+    callback null, @_configSchemaFromConfigs @configs
 
   formSchema: (callback) =>
-    callback null, @_formSchemaFromJobs @jobs
+    schema = _.merge @_formSchemaFromJobs(@jobs), @_formSchemaFromConfigs(@configs)
+    callback null, schema
 
   messageSchema: (callback) =>
     callback null, @_messageSchemaFromJobs @jobs
@@ -19,19 +21,22 @@ class JobSchemaParser
   responseSchema: (callback) =>
     callback null, @_responseSchemaFromJobs @jobs
 
-  _configSchemaFromConnectorPath: =>
-    filenames = fs.readdirSync path.join(@connectorPath, 'configs')
-    configs = {}
-    _.each filenames, (filename) =>
-      filename = _.first filename.split /\./
-      key = _.upperFirst _.camelCase filename
-      file = path.join @connectorPath, 'configs', filename
-      configs[key] = require file
-    return configs
+  _configSchemaFromConfig: (config, key) =>
+    schema = _.cloneDeep config.config
+    _.set schema, 'x-form-schema.angular', "configure.#{key}.angular"
+    return schema
+
+  _configSchemaFromConfigs: (configs) =>
+    _.mapValues configs, @_configSchemaFromConfig
 
   _formSchemaFromJobs: (jobs) =>
     return {
       message: _.mapValues jobs, 'form'
+    }
+
+  _formSchemaFromConfigs: (configs) =>
+    return {
+      configure: _.mapValues configs, 'form'
     }
 
   _generateMessageMetadata: (jobType) =>
@@ -56,6 +61,15 @@ class JobSchemaParser
         code:
           type: 'integer'
     }
+
+  _getConfigs: =>
+    dirnames = fs.readdirSync path.join(@connectorPath, 'configs')
+    configs = {}
+    _.each dirnames, (dirname) =>
+      key = _.upperFirst _.camelCase dirname
+      dir = path.join @connectorPath, 'configs', dirname
+      configs[key] = require dir
+    return configs
 
   _getJobs: =>
     dirnames = fs.readdirSync path.join(@connectorPath, 'jobs')

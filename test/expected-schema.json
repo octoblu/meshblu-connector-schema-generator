@@ -17,10 +17,22 @@
           "options"
         ],
         "title": "Default Config",
-        "type": "object"
+        "type": "object",
+        "x-form-schema": {
+          "angular": "configure.Default.angular"
+        }
       }
     },
     "form": {
+      "configure": {
+        "Default": {
+          "angular": [
+            {
+              "key": "options.something"
+            }
+          ]
+        }
+      },
       "message": {
         "Fail": {
           "angular": [
