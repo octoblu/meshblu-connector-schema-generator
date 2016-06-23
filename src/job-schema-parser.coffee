@@ -1,5 +1,5 @@
 _    = require 'lodash'
-fs   = require 'fs'
+glob = require 'glob'
 path = require 'path'
 
 class JobSchemaParser
@@ -63,21 +63,27 @@ class JobSchemaParser
     }
 
   _getConfigs: =>
-    dirnames = fs.readdirSync path.join(@connectorPath, 'configs')
+    dirnames = glob.sync path.join(@connectorPath, 'configs', '/*/')
     configs = {}
-    _.each dirnames, (dirname) =>
-      key = _.upperFirst _.camelCase dirname
-      dir = path.join @connectorPath, 'configs', dirname
-      configs[key] = require dir
+    _.each dirnames, (dir) =>
+      key = _.upperFirst _.camelCase path.basename dir
+      try
+        configs[key] = require dir
+      catch error
+        console.error error.stack
+
     return configs
 
   _getJobs: =>
-    dirnames = fs.readdirSync path.join(@connectorPath, 'jobs')
+    dirnames = glob.sync path.join(@connectorPath, 'jobs', '/*/')
     jobs = {}
-    _.each dirnames, (dirname) =>
-      key = _.upperFirst _.camelCase dirname
-      dir = path.join @connectorPath, 'jobs', dirname
-      jobs[key] = require dir
+    _.each dirnames, (dir) =>
+      key = _.upperFirst _.camelCase path.basename dir
+      try
+        jobs[key] = require dir
+      catch error
+        console.error error.stack
+
     return jobs
 
   _messageSchemaFromJob: (job, key) =>
